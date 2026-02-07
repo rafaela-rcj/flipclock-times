@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Flip Clock Widget</title>
+
+  <style>
+    :root{
+      --card:#65090a;
+      --text:#ffffff;
+      --line: rgba(255, 255, 255, 0.575);
+      --radius:11px;
+      --w:250px;
+      --h:190px;
+    }
+
+    body{
+      margin: 5px;
+      background:transparent;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial;
+    }
+
+    .clock{
+      width: var(--w);
+      height: var(--h);
+      display:flex;
+      gap: 5px;
+    }
+
+    .card{
+      flex:1;
+      background: var(--card);
+      border-radius: var(--radius);
+      position: relative;
+      display:flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      overflow:hidden;
+    }
+
+    /* linha horizontal */
+    .card::after{
+      content:"";
+      position:absolute;
+      top:50%;
+      left:0;
+      right:0;
+      height:2px;
+      background: var(--line);
+    }
+
+    .number{
+      font-size: 76px;
+      font-weight: 500;
+      color: var(--text);
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .label{
+      position:absolute;
+      bottom: 10px;
+      left: 12px;
+      font-size: 11px;
+      letter-spacing: .8px;
+      color: var(--text);
+      opacity: .9;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .label.right{
+      left: auto;
+      right: 12px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="clock" role="application" aria-label="Relógio">
+    <div class="card">
+      <div class="number" id="hour">00</div>
+      <div class="label" id="ampm">AM</div>
+    </div>
+
+    <div class="card">
+      <div class="number" id="minute">00</div>
+      <div class="label right" id="weekday">MONDAY</div>
+    </div>
+  </div>
+
+  <script>
+    const hourEl = document.getElementById("hour");
+    const minuteEl = document.getElementById("minute");
+    const ampmEl = document.getElementById("ampm");
+    const weekdayEl = document.getElementById("weekday");
+
+    function pad(n){ return String(n).padStart(2, "0"); }
+
+    function update(){
+      const now = new Date();
+
+      let h = now.getHours();
+      const m = now.getMinutes();
+
+      const isPM = h >= 12;
+      const ampm = isPM ? "PM" : "AM";
+
+      h = h % 12;
+      h = h ? h : 12; // 12 AM / 12 PM
+
+      hourEl.textContent = pad(h);
+      minuteEl.textContent = pad(m);
+      ampmEl.textContent = ampm;
+
+      const weekday = now.toLocaleDateString("en-US", { weekday: "long" });
+      weekdayEl.textContent = weekday.toUpperCase();
+    }
+
+    update();
+    setInterval(update, 1000);
+  </script>
+</body>
+</html>
